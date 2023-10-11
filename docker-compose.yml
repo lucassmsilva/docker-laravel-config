@@ -1,0 +1,73 @@
+version: "3.8"
+
+services:
+    app:
+        build:
+            args:
+                user: ${USER_DOCKER}
+                uid: 1000
+            context: ./
+            dockerfile: Dockerfile
+        image: app
+        working_dir: /var/www/
+        volumes:
+            - ./:/var/www/
+            - ./storage:/var/www/storage
+        depends_on:
+            - redis
+            - queue
+        restart: unless-stopped
+        networks:
+            - docker-laravel
+
+    nginx:
+        image: nginx:alpine
+        restart: always
+        expose:
+            - 5175
+        ports:
+            - 80:80
+            - 443:443
+        depends_on:
+            - app
+        volumes:
+            - ./:/var/www
+            - ./docker/nginx/${DOCKER_ENV}.conf:/etc/nginx/conf.d/app.conf
+            - /etc/letsencrypt:/etc/letsencrypt
+        networks:
+            - docker-laravel
+
+    redis:
+        image: redis:latest
+        networks:
+            - docker-laravel
+
+    soketi:
+        image: quay.io/soketi/soketi:0.17-16-alpine
+        ports:
+            - 6002:6002
+            - 9602:9602
+        networks:
+            - docker-laravel
+
+    queue:
+        build:
+            args:
+                user: ${USER_DOCKER}
+                uid: 1000
+            context: ./
+            dockerfile: Dockerfile
+        restart: always
+        command: "php artisan queue:work redis"
+        privileged: true
+        user: "root"
+        volumes:
+            - ./:/var/www/
+        depends_on:
+            - redis
+        networks:
+            - docker-laravel
+
+networks:
+    docker-laravel:
+        driver: bridge
