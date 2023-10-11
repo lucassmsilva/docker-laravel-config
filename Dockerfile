@@ -54,7 +54,7 @@ RUN echo "upload_max_filesize = 20M" >> /usr/local/etc/php/php.ini
 RUN echo "post_max_size = 20M" >> /usr/local/etc/php/php.ini
 RUN echo "max_execution_time = 0" >> /usr/local/etc/php/php.ini
 RUN echo "max_input_time = 0" >> /usr/local/etc/php/php.ini
-RUN echo "memory_limit = -1" >> /usr/local/etc/php/php.ini
+RUN echo "memory_limit = 1024M" >> /usr/local/etc/php/php.ini
 
 
 RUN  chown -R $user:www-data .

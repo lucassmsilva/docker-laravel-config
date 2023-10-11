@@ -42,11 +42,18 @@ services:
         networks:
             - docker-laravel
 
-    soketi:
-        image: quay.io/soketi/soketi:0.17-16-alpine
+    mariadb:
+        image: mariadb
+        container_name: mariadb-container
+        environment:
+            MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+            MYSQL_DATABASE: ${MYSQL_DATABASE}
+            MYSQL_USER: ${MYSQL_USER}
+            MYSQL_PASSWORD: ${MYSQL_PASSWORD}
         ports:
-            - 6002:6002
-            - 9602:9602
+        - "3306:3306"
+        volumes:
+        - ./data:/var/lib/mysql
         networks:
             - docker-laravel
 
