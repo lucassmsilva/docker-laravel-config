@@ -6,6 +6,7 @@ services:
             args:
                 user: ${USER_DOCKER}
                 uid: 1000
+                appname: ${APP_NAME}
             context: ./
             dockerfile: Dockerfile
         image: app
@@ -26,7 +27,7 @@ services:
         expose:
             - 5175
         ports:
-            - 80:80
+            - 81:81
             - 443:443
         depends_on:
             - app
@@ -62,6 +63,7 @@ services:
             args:
                 user: ${USER_DOCKER}
                 uid: 1000
+                appname: ${APP_NAME}
             context: ./
             dockerfile: Dockerfile
         restart: always

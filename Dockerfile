@@ -3,6 +3,7 @@ FROM php:8.2-fpm
 # Arguments defined in docker-compose.yml
 ARG user
 ARG uid
+ARG appname
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
@@ -65,4 +66,8 @@ RUN ln -fs /usr/share/zoneinfo/America/Sao_Paulo /etc/localtime && \
 
 WORKDIR /var/www
 
+RUN composer create-project laravel/laravel $appname
+
 USER $user
+
+
